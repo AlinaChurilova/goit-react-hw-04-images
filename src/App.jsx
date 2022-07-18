@@ -14,7 +14,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [largeImage, setLargeImage] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [total, setTotal] = useState();
 
+  const isVisibleButton = total <= images.length;
 
   useEffect(() => {
     const options = { queryString, currentPage };
@@ -29,6 +31,7 @@ export default function App() {
         .then(images => {
           toggleLoading();
           setImages(images.hits)
+          setTotal(images.total)
         })
         .catch(error => console.log(error));
     } 
@@ -63,7 +66,7 @@ export default function App() {
   
 
    const handleKeyDowm = e => {
-      if (e.code === 'Escape') {
+     if (e.code === 'Escape') {
       setShowModal(false);
       }
   }
@@ -83,7 +86,7 @@ export default function App() {
   }
         
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setShowModal((prevState => !prevState));
   }
   
   const onClose = event => {
@@ -91,16 +94,15 @@ export default function App() {
       toggleModal();
     }
   }
-
     return (
-      
+     
       <div>
 
         {showModal && <Modal toogleModal={onClose} keyCloseModal={handleKeyDowm }>{largeImage}</Modal>} 
         <SearchBar onSubmit={handleFormSubmit} />
         {loading && <Loader />}  
-        {images &&  <ImageGallery images={images} bigImage={getBigImage} />}
-        {!!images.length && (loading ? <Loader /> : <Button onClick={handleLoadMore} />)}
+        {images && <ImageGallery images={images} bigImage={getBigImage} />}
+        {(!!images.length && !isVisibleButton) && (loading ? <Loader /> : <Button onClick={handleLoadMore} />)}
     
       </div>
     )

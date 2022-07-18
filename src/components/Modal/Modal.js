@@ -2,11 +2,14 @@ import { useEffect} from 'react';
 import s from './Modal.module.css';
 import PropTypes from 'prop-types';
 
-
 export default function Modal({ toogleModal, keyCloseModal, children }) {
     
     useEffect(() => {
         window.addEventListener('keydown', keyCloseModal)
+
+        return () => {
+            window.removeEventListener('keydown', keyCloseModal);
+        }
     }, [keyCloseModal]);
 
     return (
